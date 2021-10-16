@@ -23,7 +23,8 @@ If you're looking for documentation, changelogs, or guides, you can find those o
 
 # Previews ([skip](#features))
 
-![Tutorial (Hard) on Downscroll](https://user-images.githubusercontent.com/15311104/113989685-fa5aea80-9850-11eb-9180-f5819a774c79.gif) ![Milf (Hard) on Downscroll](https://user-images.githubusercontent.com/15311104/113990845-2c208100-9852-11eb-8e6d-f1c9e8439871.gif)
+![ByteWolf Gameplay] 
+(https://images.gamebanana.com/img/ss/mods/615470ae777e3.jpg) ![Milf (Hard) on Downscroll](https://user-images.githubusercontent.com/15311104/113990845-2c208100-9852-11eb-8e6d-f1c9e8439871.gif)
 
 ![Roses (Hard) on Upscroll](https://user-images.githubusercontent.com/15311104/113993573-e31dfc00-9854-11eb-82ae-1f29dc8a0b04.png)
 
