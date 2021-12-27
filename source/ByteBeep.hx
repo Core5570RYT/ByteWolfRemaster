@@ -1,5 +1,6 @@
 package;
 
+import flixel.ui.FlxBar;
 import flixel.FlxObject;
 import flixel.FlxG;
 import flixel.FlxCamera;
@@ -18,36 +19,37 @@ using StringTools;
 class ByteBeep extends MusicBeatState
 {
     var char:Character;
-    var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('menuBG'));
+    var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('menuDesat'));
     var defCurZoom:Float = 0.9;
     var curZoom:Float = 0.8;
     var camArrow:FlxCamera;
-    var strumLineYPos:Int = FlxG.height - 165;
+    var strumLineYPos:Int = 50;
     var strumLineNotes:FlxTypedGroup<FlxSprite>;
     var charNum:Int = 0;
-    var charHead:HealthIcon;
     var charName:String = "byte";
     var isBF:Bool = false;
     var camFollow:FlxObject;
+
+    var songLength:Float = 0;
+    var songBG:FlxSprite;
+    var songBar:FlxBar;
+
+    var songIcon:HealthIcon;
+    var songLengthMax:Float;
 
     var sustainOnHoldLength:Float = 2;
 
     var curStage:String = 'urmom';
 
-    var charInfo:FlxText;
-
     override function create()
     {
-        Conductor.changeBPM(100);
+        //Conductor.changeBPM(100);
 		persistentUpdate = true;
-        super.create();
 
         #if windows
-        DiscordClient.changePresence("Playing With: ByteWolf", null,null,true);
+        DiscordClient.changePresence("ByteWolf - Beep Mode", null,null,true);
         #end
 
-        FlxG.sound.music.stop();
-        FlxG.sound.playMusic(Paths.inst('tutorial'), 1);
         strumLineNotes = new FlxTypedGroup<FlxSprite>();
 
         camArrow = new FlxCamera();
@@ -58,15 +60,11 @@ class ByteBeep extends MusicBeatState
         char.screenCenter();
         char.scrollFactor.set(0.95, 0.95);
 
+        bg.color = FlxColor.fromRGB(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
         bg.screenCenter();
         bg.setGraphicSize(Std.int(bg.width * 1.2));
         bg.antialiasing = true;
         generateStaticArrows();
-
-        charHead = new HealthIcon(charName);
-        charHead.animation.curAnim.curFrame = 0;
-        charHead.x = 100;
-        charHead.screenCenter(Y);
 
         var camPos:FlxPoint = new FlxPoint(char.getGraphicMidpoint().x, char.getGraphicMidpoint().y);
 
@@ -76,43 +74,55 @@ class ByteBeep extends MusicBeatState
 
 		add(camFollow);
         
-        charInfo = new FlxText(20, charHead.getGraphicMidpoint().y + 40, 0, "Character : " + charName +"["+ charNum+"]", 24);
-        charInfo.scrollFactor.set();
-		charInfo.setFormat("VCR OSD Mono",24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-        
         var controlsLmao:FlxText;
-        controlsLmao = new FlxText(20, charHead.getGraphicMidpoint().y + 200, 2000, "", 24);
+        controlsLmao = new FlxText(-10, (FlxG.height / 2), 2000, "", 20);
         controlsLmao.scrollFactor.set();
         controlsLmao.setFormat("VCR OSD Mono",24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
         if (FlxG.save.data.dfjk)
-            controlsLmao.text = "Controls: \n[DFJK] / [Arrow keys].\n[SPACE] - Playing their Hey Anims\n[Z] / [C] - Changing their health icons";
+            controlsLmao.text = "Controls: \n[DFJK] / [Arrow keys].\n[SPACE] - Playing their Hey Anims\n[Q] / [E] - Changing the Characters";
             else
-            controlsLmao.text = "Controls: \n[WASD] / [Arrow keys].\n[SPACE] - Playing their Hey Anims\n[Z] / [C] - Changing their health icons";
+            controlsLmao.text = "Controls: \n[WASD] / [Arrow keys].\n[SPACE] - Playing their Hey Anims\n[Q] / [E] - Changing the Characters";
 
-        charInfo.antialiasing = false;
         controlsLmao.antialiasing = false;
+        controlsLmao.borderSize = 2;
+
+        songLengthMax = FlxG.sound.music.length;
 
         //layershit
         add(bg);  
         add(char);
-        add(charHead);
-        add(charInfo);
         add(strumLineNotes);
         add(controlsLmao);
 
+        generateSongPositionBar();
+
         FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
+        super.create();
     }
 
     override function update(elapsed:Float) {
+
+        var curTime:Float = FlxG.sound.music.time;
+        if (curTime < 0)
+            curTime = 0;
+        songLength = (curTime / songLengthMax);
+
         if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
         super.update(elapsed);
                 
-        FlxG.camera.zoom = FlxMath.lerp(0.9, FlxG.camera.zoom, 0.95);
+        FlxG.camera.zoom = FlxMath.lerp(0.9, FlxG.camera.zoom, 0.94);
 
         keyShit();
+
+        songIcon.setGraphicSize(Std.int(FlxMath.lerp(150, songIcon.width, 0.89)));
+		songIcon.updateHitbox();
+
+		var iconOffset:Int = 26;
+
+		songIcon.x = songBar.x + (songBar.width * (FlxMath.remapToRange(songBar.percent, 0, 100, 0, 100) * 0.01) - (songIcon.width - iconOffset));
 
         for (i in 0...strumLineNotes.length)
             {
@@ -123,14 +133,29 @@ class ByteBeep extends MusicBeatState
             changeCharacter(1);
         if (FlxG.keys.justPressed.Q)
             changeCharacter(-1);
-        if (FlxG.keys.justPressed.Z)
-            changeIcon(-1);
-        if (FlxG.keys.justPressed.C)
-            changeIcon(1); 
+
+        if (songBar.percent < 20)
+			{
+				songIcon.animation.curAnim.curFrame = 1;		
+			}else {
+				songIcon.animation.curAnim.curFrame = 0;
+			}
+
+		if (songBar.percent > 80)
+			{
+                if (char.curCharacter == 'gf')
+					songIcon.animation.curAnim.curFrame = 1;
+                    else
+                    songIcon.animation.curAnim.curFrame = 2;
+			}
 
         if (FlxG.keys.justPressed.SPACE)
             {
                 heyAnims();
+            }
+        if (FlxG.keys.pressed.SPACE && char.animation.curAnim.name.toLowerCase() == heyNames())
+            {
+                char.holdTimer = 0;
             }
 
         if (controls.BACK)
@@ -138,6 +163,66 @@ class ByteBeep extends MusicBeatState
                 FlxG.sound.play(Paths.sound('cancelMenu'));
                 FlxG.switchState(new MainMenuState());
             }
+    }
+
+    function generateSongPositionBar()
+    {
+        var colorp1:FlxColor = 0xFF66FF33;
+
+		switch (char.curCharacter)
+			{
+				case 'bf':
+					colorp1 = FlxColor.fromRGB(81, 166, 235);
+				case 'gf':
+					colorp1 = FlxColor.fromRGB(108, 14, 10);
+				case 'byte':
+					colorp1 = FlxColor.fromRGB(0, 85, 255);
+			}
+
+        if (songBG != null && songBar != null && songIcon != null)
+            {
+                remove(songBG);
+                remove(songBar);
+                remove(songIcon);
+                songBG = new FlxSprite(0, FlxG.height * 0.85 + 45).loadGraphic(Paths.image('healthBar','shared'));
+                songBG.screenCenter(X);
+                songBG.antialiasing = true;
+                songBG.scrollFactor.set();
+                add(songBG);
+        
+                songBar = new FlxBar(songBG.x + 4, songBG.y + 4, LEFT_TO_RIGHT, Std.int(songBG.width - 8), Std.int(songBG.height - 8), this,'songLength', 0, 1);
+                songBar.numDivisions = 1000;
+                songBar.scrollFactor.set();
+                songBar.screenCenter(X);
+                songBar.antialiasing = true;
+                songBar.createFilledBar(FlxColor.BLACK, colorp1);
+                add(songBar);
+
+                songIcon = new HealthIcon(char.curCharacter, false);
+                songIcon.y = songBar.y - (songIcon.height / 2);
+                songIcon.setGraphicSize(Std.int(songIcon.width * 1.3));
+                add(songIcon);
+            } else{
+                songBG = new FlxSprite(0, FlxG.height * 0.85 + 45).loadGraphic(Paths.image('healthBar', 'shared'));
+                songBG.screenCenter(X);
+                songBG.antialiasing = true;
+                songBG.scrollFactor.set();
+                add(songBG);
+        
+                songBar = new FlxBar(songBG.x + 4, songBG.y + 4, LEFT_TO_RIGHT, Std.int(songBG.width - 8), Std.int(songBG.height - 8), this,'songLength', 0, 1);
+                songBar.numDivisions = 1000;
+                songBar.scrollFactor.set();
+                songBar.screenCenter(X);
+                songBar.antialiasing = true;
+                songBar.createFilledBar(FlxColor.BLACK, colorp1);
+                add(songBar);
+
+                songIcon = new HealthIcon(char.curCharacter, false);
+                songIcon.y = songBar.y - (songIcon.height / 2);
+                songIcon.setGraphicSize(Std.int(songIcon.width * 1.3));
+                add(songIcon);
+            }
+
     }
 
     function changeCharacter(addNu:Int = 0)
@@ -160,54 +245,30 @@ class ByteBeep extends MusicBeatState
                         char.screenCenter();
                         char.scrollFactor.set(0.95, 0.95);
                         add(char);
-                        remove(charHead);
                         charName = "byte";
                         charshit = "ByteWolf";
-                        charHead = new HealthIcon(charName);
-                        charHead.animation.curAnim.curFrame = 0;
-                        charHead.x = 100;
-                        charHead.screenCenter(Y);
-                        add(charHead);
                         isBF = false;
-                        charInfo.text = "Character : " + charName +"["+ charNum+"]";
                     case 1:
                         remove(char);
                         char = new Character(420,220, 'bf', true);
                         char.setGraphicSize(Std.int(char.width * 0.4));
                         char.scrollFactor.set(0.95, 0.95);
                         add(char);
-                        remove(charHead);
                         charName = "bf";
                         charshit = "Boyfriend";
-                        charHead = new HealthIcon(charName);
-                        charHead.animation.curAnim.curFrame = 0;
-                        charHead.x = 100;
-                        charHead.screenCenter(Y);
-                        add(charHead);
                         isBF = true;
-                        charInfo.text = "Character : " + charName +"["+ charNum+"]";
                     case 2:
                         remove(char);
                         char = new Character(0,0, 'gf');
                         char.setGraphicSize(Std.int(char.width * 0.7));
                         char.screenCenter();
                         char.scrollFactor.set(0.95, 0.95);
-                        remove(charHead);
                         charName = "gf";
                         charshit = "Girlfriend";
-                        charHead = new HealthIcon(charName);
-                        charHead.animation.curAnim.curFrame = 0;
-                        charHead.x = 100;
-                        charHead.screenCenter(Y);
-                        add(charHead);
                         add(char);
                         isBF = false;
-                        charInfo.text = "Character : " + charName +"["+ charNum+"]";
-
-                    #if windows
-                    DiscordClient.changePresence("Playing With: " + charshit, null,null,true);
-                    #end
                 }
+            generateSongPositionBar();
         }
 
     private function keyShit() {
@@ -242,6 +303,9 @@ class ByteBeep extends MusicBeatState
                 else
                     spr.centerOffsets();
             });
+
+        if (holdArray.contains(true))
+            char.holdTimer = 0;
 
         if (pressArray[0])
             {
@@ -278,14 +342,20 @@ class ByteBeep extends MusicBeatState
         FlxG.sound.play(Paths.sound('fnf_bf_hey', "shared"));
     }
 
-    function changeIcon(addNum:Int = 0)
+    function heyNames():String {
+        var returnThing:String = '';
+        switch (char.curCharacter.toLowerCase())
         {
-            charHead.animation.curAnim.curFrame += addNum;
-            if (charHead.animation.curAnim.curFrame < 0)
-                charHead.animation.curAnim.curFrame = 2;
-            if (charHead.animation.curAnim.curFrame < 2)
-                charHead.animation.curAnim.curFrame = 0;
+            case 'byte':
+                returnThing = 'byteHey';
+            case 'bf':
+                returnThing = 'hey';
+            case 'gf':
+                returnThing = 'cheer';
         }
+
+        return returnThing;
+    }
 
     private function generateStaticArrows():Void
         {
@@ -337,8 +407,16 @@ class ByteBeep extends MusicBeatState
     override function beatHit()
         {
             super.beatHit();
-            FlxG.camera.zoom += 0.015;
-            camArrow.zoom += 0.4;
+            if (curBeat % 4 == 0)
+                {
+                    FlxG.camera.zoom += 0.050;  
+                    bg.color = FlxColor.fromRGB(FlxG.random.int(50, 255), FlxG.random.int(50, 255), FlxG.random.int(50, 255));                 
+                }
+
+            //camArrow.zoom += 0.4;
+
+            songIcon.setGraphicSize(Std.int(songIcon.width + 30));
+            songIcon.updateHitbox();
 
             if (!char.animation.curAnim.name.startsWith('sing'))
                 {

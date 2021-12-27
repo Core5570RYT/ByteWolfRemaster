@@ -71,7 +71,7 @@ class ResizeState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, LOCKON, 0.01);
 
-		FlxG.camera.zoom = 0.9;
+		FlxG.camera.zoom = 1;
 		FlxG.camera.focusOn(camFollow.getPosition());
 
         sick.cameras = [camHUD];

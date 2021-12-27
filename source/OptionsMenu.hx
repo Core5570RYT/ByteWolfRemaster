@@ -22,6 +22,7 @@ class OptionsMenu extends MusicBeatState
 	var options:Array<OptionCatagory> = [
 		new OptionCatagory("Gameplay", [
 			new DFJKOption(controls),
+			new MiddleScrollOption("If enabled, your strum note will be on middle and hiding the opponent strum note"),
 			new DownscrollOption("Change the layout of the strumline."),
 			new GhostTapOption("Ghost Tapping is when you tap a direction and it doesn't give you a miss."),
 			new Judgement("Customize your Hit Timings (LEFT or RIGHT)"),
@@ -62,6 +63,8 @@ class OptionsMenu extends MusicBeatState
 			new MainMenuCharacters("If it's enabled, it will shows Byte, BF, and GF at Main Menu."),
 			new NoteSplashes("Enables note splashing effects (Like week 7)"),
 			new RatingSpriteScale("Change the Rating text's image scale"),
+			new ScoreStyle("Change how this engine shows you the score text."),
+			new MiddleScrollOption("If enabled, your strum note will be on middle and hiding the opponent strum note"),
 			//new AchievementThing("Your V.S ByteWolf Mod Achievements"),
 			//new ScreenShake("Enables the shake effect."),
 			//new LanguageOption("Switch to English or Indonesian Language (Not fully functional Right now)"),
@@ -123,6 +126,7 @@ class OptionsMenu extends MusicBeatState
 		super.update(elapsed);
 		
 			if (controls.BACK && !isCat){
+				FlxG.save.flush();
 				if (fromPauseState)
 					{
 						FlxG.sound.pause();
@@ -138,6 +142,7 @@ class OptionsMenu extends MusicBeatState
 			}
 			else if (controls.BACK)
 			{
+				FlxG.save.flush();
 				isCat = false;
 				grpControls.clear();
 				for (i in 0...options.length)
@@ -240,7 +245,6 @@ class OptionsMenu extends MusicBeatState
 					curSelected = 0;
 				}
 			}
-		FlxG.save.flush();
 	}
 
 	var isSettingControl:Bool = false;

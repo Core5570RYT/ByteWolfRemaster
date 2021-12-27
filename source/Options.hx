@@ -224,6 +224,26 @@ class ResetButtonOption extends Option
 	}
 }
 
+class MiddleScrollOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	public override function press():Bool
+	{
+		FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Middlescroll " + (!FlxG.save.data.middlescroll ? "off" : "on");
+	}
+}
+
 class FlashingLightsOption extends Option
 {
 	public function new(desc:String)
@@ -532,6 +552,28 @@ class CustomizeGameplay extends Option
 	private override function updateDisplay():String
 	{
 		return "Customize Gameplay";
+	}
+}
+
+class ScoreStyle extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		trace("switch");
+		FlxG.switchState(new ChangeUIScore());
+		//FlxG.sound.music.stop();
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Customize Scoring Text";
 	}
 }
 

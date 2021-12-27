@@ -34,14 +34,16 @@ https://youtube.com/c/Core5570RYT
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-
 	Song Credits
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-
-Tutorial - OG FNF
-Byte - V.S ByteWolf
-Woof - V.S ByteWolf
-Howl - V.S ByteWolf
-Ok - V.S ByteWolf
-Hello uwu - V.S ByteWolf
+Tutorial - OG FNF (Remix By Core5570 R / CoreDev)
+Byte - FNH V.S ByteWolf
+Woof - FNH V.S ByteWolf
+Howl - FNH V.S ByteWolf
+Ok - FNH V.S ByteWolf
+Wolf - FNH V.S ByteWolf
+Night - FNH V.S ByteWolf
+Hello uwu - FNH V.S ByteWolf
 Milf - OG FNF
-Byte remix - V.S ByteWolf
+Byte remix - FNH V.S ByteWolf
 Heartbass - FNF Date Week 
 Expurgation - The Tricky Mod
 

@@ -71,6 +71,8 @@ class TitleState extends MusicBeatState
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
+		FlxG.game.focusLostFramerate = 60;
+
 		// DEBUG BULLSHIT
 
 		super.create();
@@ -116,7 +118,6 @@ class TitleState extends MusicBeatState
 
 	var logoBl:FlxSprite;
 	var bg11:FlxSprite;
-	var gfDance:FlxSprite;
 	var bytetitle:FlxSprite;
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
@@ -155,15 +156,15 @@ class TitleState extends MusicBeatState
 						Conductor.changeBPM(120);
 					persistentUpdate = true;
 			
-					var bg:FlxSprite = new FlxSprite(-3300,-3300).makeGraphic(7000, 7000, FlxColor.CYAN);
+					var bg:FlxSprite = new FlxSprite(-3300,-3300).makeGraphic(7000, 7000, FlxColor.fromRGB(0, 66, 107));
 					// bg.antialiasing = true;
 					// bg.setGraphicSize(Std.int(bg.width * 0.6));
 					// bg.updateHitbox();
 			
-					bg.alpha = 0.3;
+					//bg.alpha = 0.3;
 					add(bg);
 			
-					bg11 = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
+					bg11 = new FlxSprite(-3300,-3300).makeGraphic(7000, 7000, FlxColor.WHITE);
 					bg11.alpha = 0;
 					add(bg11);
 			
@@ -174,14 +175,6 @@ class TitleState extends MusicBeatState
 					logoBl.updateHitbox();
 					// logoBl.screenCenter();
 					// logoBl.color = FlxColor.BLACK;
-			
-					gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
-					gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
-					gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-					gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-					gfDance.antialiasing = true;
-					//add(gfDance);
-					//add(logoBl);
 			
 					bytetitle = new FlxSprite(FlxG.width * 0.8, FlxG.height * 0.02);
 					bytetitle.frames = Paths.getSparrowAtlas('byteDanceTitle');
@@ -206,14 +199,6 @@ class TitleState extends MusicBeatState
 			
 					logoBl.y += 700;
 					bytetitle.x = FlxG.camera.width + 222;
-			
-					var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
-					logo.screenCenter();
-					logo.antialiasing = true;
-					// add(logo);
-			
-					// FlxTween.tween(logoBl, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG});
-					// FlxTween.tween(logo, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG, startDelay: 0.1});
 			
 					credGroup = new FlxGroup();
 					add(credGroup);
@@ -282,7 +267,7 @@ class TitleState extends MusicBeatState
 		if (loaded)
 			{
 				FlxG.camera.zoom = FlxMath.lerp(0.8, FlxG.camera.zoom, 0.95);
-				//bg11.alpha = FlxMath.lerp(1, bg11.alpha, 0.95);
+				bg11.alpha = FlxMath.lerp(0, bg11.alpha, 0.95);
 				if (FlxG.sound.music != null)
 					Conductor.songPosition = FlxG.sound.music.time;
 				// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
@@ -397,6 +382,7 @@ class TitleState extends MusicBeatState
 
 	override function beatHit()
 	{
+		bg11.alpha += 0.1;
 		FlxG.camera.zoom += 0.025;	
 
 		super.beatHit();
@@ -462,15 +448,15 @@ class TitleState extends MusicBeatState
 			// credTextShit.screenCenter();
 			case 13:
 				FlxG.camera.zoom += 0.025;	
-				addMoreText('fnf');
+				addMoreText('Friday');
 			// credTextShit.visible = true;
 			case 14:
 				FlxG.camera.zoom += 0.025;	
-				addMoreText('vs byte');
+				addMoreText('Night');
 			// credTextShit.text += '\nNight';
 			case 15:
 				FlxG.camera.zoom += 0.025;	
-				addMoreText('wolf mod'); // credTextShit.text += '\nFunkin';
+				addMoreText('Howlin'); // credTextShit.text += '\nFunkin';
 
 			case 16:
 				doneTxt = true;

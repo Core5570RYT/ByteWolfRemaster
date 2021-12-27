@@ -246,9 +246,9 @@ class ThankYouState extends MusicBeatState
                 case 7:
                     deleteCoolText();
                 case 8:
-                    createCoolText(['VS', 'ByteWolf']);
+                    createCoolText(['Friday Night Howlin']);
                 case 10:
-                    addMoreText('Remastered Mod');
+                    addMoreText('vs ByteWolf');
                 case 11:
                     deleteCoolText();
                 case 12:

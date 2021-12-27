@@ -20,14 +20,12 @@ using StringTools;
 
 class AboutStateMod extends MusicBeatState
 {
-    //membuat variabel
     var logo:FlxSprite;
     var bg:FlxSprite = new FlxSprite(-80, 0).loadGraphic(Paths.image('bytestagesky'));
     var bg2:FlxSprite = new FlxSprite(0,600).loadGraphic(Paths.image('aboutmodlol'));
     private var grpmods:FlxTypedGroup<Alphabet>;
     private var camHUD:FlxCamera;
 
-    //ga jago ngoding, ya gini
     override function create() 
         {
             Conductor.changeBPM(100);

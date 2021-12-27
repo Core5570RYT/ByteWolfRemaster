@@ -106,6 +106,12 @@ class KadeEngineData
 		if (FlxG.save.data.howlfull == null)
 			FlxG.save.data.howlfull = false;
 
+		if (FlxG.save.data.middlescroll == null)
+			FlxG.save.data.middlescroll = false;
+
+		if (FlxG.save.data.scoreStyle == null)
+			FlxG.save.data.scoreStyle = "ByteWolf";
+
 		Conductor.recalculateTimings();
 
 		Main.watermarks = FlxG.save.data.watermark;

@@ -75,7 +75,7 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
-		heyyy = new FlxSound().loadEmbedded(Paths.sound('fnf_bf_hey'));
+		heyyy = new FlxSound().loadEmbedded(Paths.sound('fnf_bf_hey', 'shared'));
 		FlxG.sound.list.add(heyyy);
 		persistentUpdate = persistentDraw = true;
 
@@ -273,6 +273,7 @@ class StoryMenuState extends MusicBeatState
 	var selectedWeek:Bool = false;
 	var stopspamming:Bool = false;
 	var nospam:Bool = false;
+	var isClicked:Bool = false;
 
 	function selectWeek()
 	{
@@ -310,6 +311,7 @@ class StoryMenuState extends MusicBeatState
 
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
+				FlxG.switchState(new VideoState('assets/videos/wolf.webm', new PlayState()));
 				LoadingState.loadAndSwitchState(new PlayState());
 			});
 		}

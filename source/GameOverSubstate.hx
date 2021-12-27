@@ -47,7 +47,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		add(gf);
 		add(bf);
 
-		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
+		camFollow = new FlxObject(bf.getMidpoint().x - 100, bf.getMidpoint().y - 100, 1, 1);
 		add(camFollow);
 
 		FlxG.sound.play(Paths.sound('fnf_loss_sfx' + stageSuffix));
@@ -146,6 +146,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
+					FlxG.save.flush();
 					LoadingState.loadAndSwitchState(new PlayState());
 				});
 			});

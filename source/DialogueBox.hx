@@ -297,7 +297,7 @@ class DialogueBox extends FlxSpriteGroup
 			swagDialogue.color = FlxColor.WHITE;
 			dropText.color = FlxColor.BLACK;
 		}
-		
+
 		//lol
 		switch (curCharacter)
 			{
@@ -521,6 +521,7 @@ class DialogueBox extends FlxSpriteGroup
 						portraitbf1.animation.play('enter');
 					}
 		}
+
 	}
 
 	function cleanDialog():Void
